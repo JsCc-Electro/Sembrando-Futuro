@@ -161,156 +161,160 @@
     </div>
 
     <script>
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            }
-            return label;
-        };
-        
-        const wrapLabel = (label) => {
-            const maxLength = 16;
-            if (label.length <= maxLength) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
-            words.forEach(word => {
-                if ((currentLine + word).length > maxLength) {
-                    lines.push(currentLine.trim());
-                    currentLine = '';
+        // --- CAMBIO IMPORTANTE ---
+        // Envolvemos todo el código en este evento para asegurar que el HTML esté completamente cargado antes de ejecutar el script.
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
                 }
-                currentLine += word + ' ';
-            });
-            lines.push(currentLine.trim());
-            return lines;
-        };
-
-        const victimasData = {
-            totalPoblacion: 23429,
-            victimas: 10580,
-        };
-        victimasData.noVictimas = victimasData.totalPoblacion - victimasData.victimas;
-        const porcentajeVictimas = (victimasData.victimas / victimasData.totalPoblacion) * 100;
-
-        const ctxVictimas = document.getElementById('victimasChart').getContext('2d');
-        new Chart(ctxVictimas, {
-            type: 'doughnut',
-            data: {
-                labels: [`Población Víctima del Conflicto (${porcentajeVictimas.toFixed(1)}%)`, 'Resto de la Población'],
-                datasets: [{
-                    data: [victimasData.victimas, victimasData.noVictimas],
-                    backgroundColor: ['#FFA000', '#0074D9'],
-                    borderColor: ['#FFFFFF', '#FFFFFF'],
-                    borderWidth: 4,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            font: { size: 14 },
-                            color: '#003B73',
-                            padding: 20
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Proporción de la Población Víctima del Conflicto',
-                        font: { size: 18, weight: 'bold' },
-                        color: '#003B73',
-                        padding: {
-                            bottom: 20
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
-                        }
+                return label;
+            };
+            
+            const wrapLabel = (label) => {
+                const maxLength = 16;
+                if (label.length <= maxLength) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = '';
                     }
-                }
-            }
-        });
+                    currentLine += word + ' ';
+                });
+                lines.push(currentLine.trim());
+                return lines;
+            };
 
-        const ctxImpacto = document.getElementById('impactoChart').getContext('2d');
-        new Chart(ctxImpacto, {
-            type: 'bar',
-            data: {
-                labels: [
-                    wrapLabel('Mejora Calidad de Vida'), 
-                    wrapLabel('Atención en Salud Mental'), 
-                    wrapLabel('Generación de Empleo Local'), 
-                    wrapLabel('Dinamización Económica'),
-                    wrapLabel('Símbolo de Reconstrucción')
-                ],
-                datasets: [{
-                    label: 'Impacto Esperado del Proyecto',
-                    data: [95, 90, 75, 70, 100],
-                    backgroundColor: [
-                        '#79BDEE',
-                        '#63AEE5',
-                        '#4D9FDC',
-                        '#3790D3',
-                        '#2181CA'
-                    ],
-                    borderColor: '#FFFFFF',
-                    borderWidth: 2,
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                           color: '#FFFFFF'
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.2)'
-                        }
-                    },
-                    y: {
-                       ticks: {
-                           color: '#FFFFFF',
-                           font: {
-                               size: 12
-                           }
-                       },
-                       grid: {
-                           display: false
-                       }
-                    }
+            const victimasData = {
+                totalPoblacion: 23429,
+                victimas: 10580,
+            };
+            victimasData.noVictimas = victimasData.totalPoblacion - victimasData.victimas;
+            const porcentajeVictimas = (victimasData.victimas / victimasData.totalPoblacion) * 100;
+
+            const ctxVictimas = document.getElementById('victimasChart').getContext('2d');
+            new Chart(ctxVictimas, {
+                type: 'doughnut',
+                data: {
+                    labels: [`Población Víctima del Conflicto (${porcentajeVictimas.toFixed(1)}%)`, 'Resto de la Población'],
+                    datasets: [{
+                        data: [victimasData.victimas, victimasData.noVictimas],
+                        backgroundColor: ['#FFA000', '#0074D9'],
+                        borderColor: ['#FFFFFF', '#FFFFFF'],
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Dimensiones del Impacto del Hogar Gerontológico',
-                        font: { size: 16, weight: 'bold' },
-                        color: '#FFFFFF',
-                        padding: {
-                            bottom: 20
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#003B73',
+                                padding: 20
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Proporción de la Población Víctima del Conflicto',
+                            font: { size: 18, weight: 'bold' },
+                            color: '#003B73',
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
                         }
                     }
                 }
-            }
+            });
+
+            const ctxImpacto = document.getElementById('impactoChart').getContext('2d');
+            new Chart(ctxImpacto, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        wrapLabel('Mejora Calidad de Vida'), 
+                        wrapLabel('Atención en Salud Mental'), 
+                        wrapLabel('Generación de Empleo Local'), 
+                        wrapLabel('Dinamización Económica'),
+                        wrapLabel('Símbolo de Reconstrucción')
+                    ],
+                    datasets: [{
+                        label: 'Impacto Esperado del Proyecto',
+                        data: [95, 90, 75, 70, 100],
+                        backgroundColor: [
+                            '#79BDEE',
+                            '#63AEE5',
+                            '#4D9FDC',
+                            '#3790D3',
+                            '#2181CA'
+                        ],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                               color: '#FFFFFF'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            }
+                        },
+                        y: {
+                           ticks: {
+                               color: '#FFFFFF',
+                               font: {
+                                   size: 12
+                               }
+                           },
+                           grid: {
+                               display: false
+                           }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Dimensiones del Impacto del Hogar Gerontológico',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#FFFFFF',
+                            padding: {
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
